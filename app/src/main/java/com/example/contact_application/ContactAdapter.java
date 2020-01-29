@@ -11,12 +11,14 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 
-public class ContactAdapter extends BaseAdapter {
+public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHolder> {
     private Context context;
     private ArrayList<ContactModel> arrayList;
 
@@ -24,22 +26,26 @@ public class ContactAdapter extends BaseAdapter {
         this.context = context;
         this.arrayList = arrayList;
     }
-    private class ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder{
         TextView contactName, contactNumber, contactEmail, contactOtherDetails;
         ImageView contactImage;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            contactName = (TextView) itemView.findViewById(R.id.contactName);
+            contactNumber = (TextView) itemView.findViewById(R.id.contactNumber);
+            contactEmail = (TextView) itemView.findViewById(R.id.contactEmail);
+            contactOtherDetails = (TextView) itemView.findViewById(R.id.contactOtherDetails);
+            contactImage = (ImageView) itemView.findViewById(R.id.contactImage);
+        }
     }
 
     @Override
-    public int getCount() {
+    public int getItemCount() {
 
         return arrayList.size();
     }
 
-    @Override
-    public ContactModel getItem(int position) {
-
-        return arrayList.get(position);
-    }
 
     @Override
     public long getItemId(int position) {
@@ -48,22 +54,16 @@ public class ContactAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.custom_view, parent, false);
+        ViewHolder contactViewHolder = new ViewHolder(view);
+        return contactViewHolder;
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+
         ContactModel model = arrayList.get(position);
-        ViewHolder holder;
-        if (convertView == null) {
-            convertView = inflater.inflate(R.layout.custom_view, parent, false);
-            holder = new ViewHolder();
-            holder.contactName = (TextView) convertView.findViewById(R.id.contactName);
-            holder.contactNumber = (TextView) convertView.findViewById(R.id.contactNumber);
-            holder.contactEmail = (TextView) convertView.findViewById(R.id.contactEmail);
-            holder.contactOtherDetails = (TextView) convertView.findViewById(R.id.contactOtherDetails);
-            holder.contactImage = (ImageView) convertView.findViewById(R.id.contactImage);
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
 
         if (!model.getContactName().equals("") && model.getContactName() != null) {
             holder.contactName.setText(model.getContactName());
@@ -73,19 +73,19 @@ public class ContactAdapter extends BaseAdapter {
 
         if (!model.getContactNumber().equals("") && model.getContactNumber() != null) {
             holder.contactNumber.setText(model.getContactNumber());
-        }  else {
+        } else {
             holder.contactNumber.setText(context.getString(R.string.NO_CONTACT_NO));
         }
 
         if (!model.getContactEmail().equals("") && model.getContactEmail() != null) {
             holder.contactEmail.setText(model.getContactEmail());
-        }  else {
+        } else {
             holder.contactEmail.setText(context.getString(R.string.NO_CONTACT_EMAIL));
         }
 
         if (!model.getContactOtherDetails().equals("") && model.getContactOtherDetails() != null) {
             holder.contactOtherDetails.setText(model.getContactOtherDetails());
-        }  else {
+        } else {
             holder.contactOtherDetails.setText(context.getString(R.string.NO_CONTACT_OTHER_DETAILS));
         }
 
@@ -94,8 +94,5 @@ public class ContactAdapter extends BaseAdapter {
         } else {
             Glide.with(context).load(R.drawable.ic_person_black_24dp).apply(new RequestOptions().override(120, 120)).into(holder.contactImage);
         }
-
-        return convertView;
-
     }
 }

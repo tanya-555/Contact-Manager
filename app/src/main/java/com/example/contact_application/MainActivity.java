@@ -5,6 +5,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.ContentUris;
@@ -28,7 +30,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
 
-    private ListView contact_listview;
+    private RecyclerView contact_recyclerview;
     private static ArrayList<ContactModel> arrayList;
     private ContactAdapter adapter;
 
@@ -41,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        contact_listview = (ListView) findViewById(R.id.contact_listview);
+        contact_recyclerview = (RecyclerView) findViewById(R.id.contact_recyclerview);
         new LoadContacts().execute();
 
     }
@@ -78,7 +80,9 @@ public class MainActivity extends AppCompatActivity {
                 adapter = null;
                 if (adapter == null) {
                     adapter = new ContactAdapter(MainActivity.this, arrayList);
-                    contact_listview.setAdapter(adapter);
+                    LinearLayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+                    contact_recyclerview.setLayoutManager(mLayoutManager);
+                    contact_recyclerview.setAdapter(adapter);
                 }
                 adapter.notifyDataSetChanged();
             } else {
