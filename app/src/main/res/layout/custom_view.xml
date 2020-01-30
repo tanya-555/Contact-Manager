@@ -15,10 +15,13 @@
         android:id="@+id/contactName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignLeft="@id/contactNumber"
-        android:layout_alignStart="@id/contactNumber"
         android:layout_below="@id/contactImage"
+        android:layout_alignStart="@id/contactNumber"
+        android:layout_alignLeft="@id/contactNumber"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="-4dp"
         android:lineSpacingExtra="3dp"
         android:padding="5dp"
         android:textColor="#000000"
@@ -51,4 +54,12 @@
         android:lineSpacingExtra="3dp"
         android:padding="5dp"
         android:textSize="15sp" />
+
+    <ImageView
+        android:id="@+id/expand"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft = "300dp"
+        />
+
 </RelativeLayout>
