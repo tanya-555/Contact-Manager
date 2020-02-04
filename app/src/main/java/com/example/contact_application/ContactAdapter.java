@@ -1,11 +1,17 @@
 package com.example.contact_application;
 
+import android.content.ContentProviderOperation;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
+import android.os.RemoteException;
 import android.provider.ContactsContract;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,9 +21,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bluelinelabs.conductor.Controller;
+import com.bluelinelabs.conductor.RouterTransaction;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
@@ -26,12 +36,15 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
     private Context context;
     private ArrayList<ContactModel> arrayList;
     public int item_position;
+    ContactActionListener actionListener;
 
 
-    ContactAdapter(Context context, ArrayList<ContactModel> arrayList) {
+    ContactAdapter(Context context, ArrayList<ContactModel> arrayList, ContactActionListener actionListener) {
         this.context = context;
+        this.actionListener = actionListener;
         this.arrayList = arrayList;
     }
+
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
         TextView contactName, contactNumber, contactEmail, contactOtherDetails;
         ImageView contactImage, expandImage;
@@ -47,46 +60,42 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
 
 
             itemView.setOnCreateContextMenuListener(this);
-
-
         }
 
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-
             menu.setHeaderTitle("Select The Action");
-            menu.add(0, 1, 0, "Delete Contact");//groupId, itemId, order, title
-            menu.add(0, 2, 0, "Update Contact");
-
+            MenuItem delete = menu.add(Menu.NONE, 1, 1, "Delete Contact");//groupId, itemId, order, title
+            MenuItem edit = menu.add(Menu.NONE, 2, 2, "Update Contact");
+            edit.setOnMenuItemClickListener(onEditMenu);
+            delete.setOnMenuItemClickListener(onEditMenu);
         }
 
+        private final MenuItem.OnMenuItemClickListener onEditMenu = new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                //Toast toast = null;
+                //int item_id = item.getItemId();
+                //new ContactListController().chooseOption(item_id, context, arrayList, item_position, toast);
 
-        @Override
-        public boolean onContextItemSelected(MenuItem item) {
-            Toast toast = null;
-            switch(item.getItemId()) {
-                case 1:
-                    //toast = Toast.makeText(context, "Selected Option1 ", Toast.LENGTH_LONG);
-                    //toast.show();
-                    boolean result = deleteContact(context, arrayList.get(item_position).getContactNumber(), arrayList.get(item_position).getContactName());
-                    if(result == true) {
-                        toast = Toast.makeText(context, "Contact deleted successfully", Toast.LENGTH_LONG);
-                        toast.show();
-                    } else {
-                        toast = Toast.makeText(context, "Unable to delete contact!", Toast.LENGTH_LONG);
-                        toast.show();
-                    }
-                    break;
-                case 2:
-                    break;
+                switch (item.getItemId()) {
+                    case 1:
+                        actionListener.onDelete(item_position);
+                        break;
+                    case 2:
+                        actionListener.onUpdate(item_position);
+                        break;
+                }
+
+
+                return true;
             }
-            return true;
-
-        }
+        };
 
 
     }
+
 
     @Override
     public int getItemCount() {
@@ -101,28 +110,28 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
         return position;
     }
 
-    public static boolean deleteContact(Context ctx, String phone, String name) {
-        Uri contactUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phone));
-        Cursor cur = ctx.getContentResolver().query(contactUri, null, null, null, null);
+
+    public static long getContactID(ContentResolver contactHelper,String number) {
+        Uri contactUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
+        String[] projection = { ContactsContract.PhoneLookup._ID };
+        Cursor cursor = null;
         try {
-            if (cur.moveToFirst()) {
-                do {
-                    if (cur.getString(cur.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME)).equalsIgnoreCase(name)) {
-                        String lookupKey = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY));
-                        Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_LOOKUP_URI, lookupKey);
-                        ctx.getContentResolver().delete(uri, null, null);
-                        return true;
-                    }
-
-                } while (cur.moveToNext());
+            cursor = contactHelper.query(contactUri, projection, null, null,null);
+            if (cursor.moveToFirst()) {
+                int personID = cursor.getColumnIndex(ContactsContract.PhoneLookup._ID);
+                return cursor.getLong(personID);
             }
-
+            return -1;
         } catch (Exception e) {
-            System.out.println(e.getStackTrace());
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+                cursor = null;
+            }
         }
-        return false;
+        return -1;
     }
-
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -148,35 +157,40 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
             }
         });
 
-        if (!model.getContactName().equals("") && model.getContactName() != null) {
-            holder.contactName.setText(model.getContactName());
-        } else {
-            holder.contactName.setText(R.string.no_name);
-        }
+            if (!("").equals(model.getContactName()) && model.getContactName() != null) {
+                holder.contactName.setText(model.getContactName());
+            } else {
+                holder.contactName.setText(R.string.no_name);
+            }
 
-        if (!model.getContactNumber().equals("") && model.getContactNumber() != null) {
-            holder.contactNumber.setText(model.getContactNumber());
-        } else {
-            holder.contactNumber.setText(context.getString(R.string.NO_CONTACT_NO));
-        }
+            if (!("").equals(model.getContactNumber()) && model.getContactNumber() != null) {
+                holder.contactNumber.setText(model.getContactNumber());
+            } else {
+                holder.contactNumber.setText(context.getString(R.string.NO_CONTACT_NO));
+            }
 
-        if (!model.getContactEmail().equals("") && model.getContactEmail() != null) {
-            holder.contactEmail.setText(model.getContactEmail());
-        } else {
-            holder.contactEmail.setText(context.getString(R.string.NO_CONTACT_EMAIL));
-        }
+            if (!("").equals(model.getContactEmail()) && model.getContactEmail() != null) {
+                holder.contactEmail.setText(model.getContactEmail());
+            } else {
+                holder.contactEmail.setText(context.getString(R.string.NO_CONTACT_EMAIL));
+            }
 
-        if (!model.getContactOtherDetails().equals("") && model.getContactOtherDetails() != null) {
-            holder.contactOtherDetails.setText(model.getContactOtherDetails());
-        } else {
-            holder.contactOtherDetails.setText(context.getString(R.string.NO_CONTACT_OTHER_DETAILS));
-        }
+            if (!("").equals(model.getContactOtherDetails()) && model.getContactOtherDetails() != null) {
+                holder.contactOtherDetails.setText(model.getContactOtherDetails());
+            } else {
+                holder.contactOtherDetails.setText(context.getString(R.string.NO_CONTACT_OTHER_DETAILS));
+            }
 
-        if (!model.getContactImage().equals("") && model.getContactImage() != null) {
-            Glide.with(context).load(Uri.parse(model.getContactImage())).apply(new RequestOptions().override(120, 120)).into(holder.contactImage);
-        } else {
-            Glide.with(context).load(R.drawable.ic_person_black_24dp).apply(new RequestOptions().override(120, 120)).into(holder.contactImage);
-        }
+            if (!model.getContactImage().equals("") && model.getContactImage() != null) {
+                Glide.with(context).load(Uri.parse(model.getContactImage())).apply(new RequestOptions().override(120, 120)).into(holder.contactImage);
+            } else {
+                Glide.with(context).load(R.drawable.ic_person_black_24dp).apply(new RequestOptions().override(120, 120)).into(holder.contactImage);
+            }
 
+    }
+
+    public interface ContactActionListener{
+        void onUpdate(int itemPosition);
+        void onDelete(int itemPosition);
     }
 }

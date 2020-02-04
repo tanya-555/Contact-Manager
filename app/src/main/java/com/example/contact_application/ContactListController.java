@@ -1,19 +1,24 @@
 package com.example.contact_application;
 
 import android.Manifest;
+import android.content.ContentProviderOperation;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.OperationApplicationException;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -29,18 +34,24 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bluelinelabs.conductor.Controller;
 
+import com.bluelinelabs.conductor.RouterTransaction;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
+import static com.example.contact_application.ContactAdapter.getContactID;
+
 public class ContactListController extends Controller {
     private static final String TAG = ContactListController.class.getSimpleName();
 
+    public static final String CONTACT_ID = "contact_id";
     private RecyclerView contact_recyclerview;
     private static ArrayList<ContactModel> arrayList;
-    private ContactAdapter adapter;
+    public ContactAdapter adapter;
     private ProgressBar progressBar;
+    private FloatingActionButton add_contact;
     View view;
+    Toast toast = null;
 
     private static final int REQUEST_CODE = 1000;
 
@@ -55,10 +66,67 @@ public class ContactListController extends Controller {
         view = inflater.inflate(R.layout.main_controller, container, false);
         contact_recyclerview = (RecyclerView) view.findViewById(R.id.contact_recyclerview);
         progressBar = (ProgressBar) view.findViewById(R.id.progressbar);
-
+        add_contact = (FloatingActionButton) view.findViewById(R.id.add_contact);
         new LoadContacts().execute();
+
+        add_contact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                runThis(v);
+            }
+        });
         return view;
     }
+
+
+
+    public void runThis(View v) {
+        getRouter().pushController(RouterTransaction.with(new AddContactController()));
+
+    }
+
+
+    ContactAdapter.ContactActionListener listener = new ContactAdapter.ContactActionListener() {
+        @Override
+        public void onUpdate(int itemPosition) {
+
+            String contact_id = String.valueOf(getContactID(getApplicationContext().getContentResolver(), arrayList.get(itemPosition).getContactNumber()));
+            Bundle args = new Bundle();
+            args.putString(CONTACT_ID, contact_id);
+            getRouter().pushController(RouterTransaction.with(new UpdateContactController(args)));
+        }
+
+        @Override
+        public void onDelete(int itemPosition) {
+            boolean result = deleteContact(getApplicationContext().getContentResolver(),  arrayList.get(itemPosition).getContactNumber(), adapter, itemPosition);
+            if (result == true) {
+                toast = Toast.makeText(getApplicationContext(), "Contact deleted successfully", Toast.LENGTH_LONG);
+                toast.show();
+
+            } else {
+                toast = Toast.makeText(getApplicationContext(), "Unable to delete contact!", Toast.LENGTH_LONG);
+                toast.show();
+            }
+        }
+    };
+
+    public boolean deleteContact(ContentResolver contactHelper, String number, ContactAdapter adapter, int item_position) {
+        ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
+        String[] args = new String[] { String.valueOf(getContactID(contactHelper, number))};
+        ops.add(ContentProviderOperation.newDelete(ContactsContract.RawContacts.CONTENT_URI).withSelection(ContactsContract.RawContacts.CONTACT_ID + "=?", args).build());
+        try {
+            contactHelper.applyBatch(ContactsContract.AUTHORITY, ops);
+            //this.notifyDataSetChanged();
+            adapter.notifyItemRemoved(item_position);
+            return true;
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        } catch (OperationApplicationException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 
     //Nested class
 
@@ -71,6 +139,9 @@ public class ContactListController extends Controller {
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS}, REQUEST_CODE);
             } else {
                 arrayList = readContacts();
+            }
+            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_DENIED) {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_CONTACTS}, REQUEST_CODE);
             }
             return null;
         }
@@ -89,7 +160,7 @@ public class ContactListController extends Controller {
                 ((AppCompatActivity)getActivity()).getSupportActionBar().setSubtitle(arrayList.size() + " Contacts");
                 adapter = null;
                 if (adapter == null) {
-                    adapter = new ContactAdapter(getActivity(), arrayList);
+                    adapter = new ContactAdapter(getActivity(), arrayList, listener);
                     LinearLayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
                     contact_recyclerview.setLayoutManager(mLayoutManager);
                     contact_recyclerview.setAdapter(adapter);
@@ -179,9 +250,9 @@ public class ContactListController extends Controller {
 
                             if (dataCursor.getString(dataCursor.getColumnIndex("mimetype")).equals(ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE)) {
                                 companyName = dataCursor.getString(dataCursor.getColumnIndex("data1"));
-                                contactOtherDetails += "Company Name : " + companyName + "n";
+                                contactOtherDetails += "Company Name : " + companyName + "   ";
                                 title = dataCursor.getString(dataCursor.getColumnIndex("data4"));
-                                contactOtherDetails += "Title : " + title + "n";
+                                contactOtherDetails += "Title : " + title + "   ";
                             }
 
                             if (dataCursor.getString(dataCursor.getColumnIndex("mimetype")).equals(ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE)) {
@@ -201,5 +272,7 @@ public class ContactListController extends Controller {
         contactsCursor.close();
         return contactList;
     }
+
+
 
 }
