@@ -1,36 +1,28 @@
 package com.example.contact_application;
 
-import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.provider.ContactsContract;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bluelinelabs.conductor.Controller;
-import com.bluelinelabs.conductor.RouterTransaction;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHolder> {
     private Context context;
@@ -45,18 +37,18 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
         this.arrayList = arrayList;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
         TextView contactName, contactNumber, contactEmail, contactOtherDetails;
         ImageView contactImage, expandImage;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            contactName = (TextView) itemView.findViewById(R.id.contactName);
-            contactNumber = (TextView) itemView.findViewById(R.id.contactNumber);
-            contactEmail = (TextView) itemView.findViewById(R.id.contactEmail);
-            contactOtherDetails = (TextView) itemView.findViewById(R.id.contactOtherDetails);
-            contactImage = (ImageView) itemView.findViewById(R.id.contactImage);
-            expandImage = (ImageView) itemView.findViewById(R.id.expand);
+            contactName = itemView.findViewById(R.id.contactName);
+            contactNumber = itemView.findViewById(R.id.contactNumber);
+            contactEmail = itemView.findViewById(R.id.contactEmail);
+            contactOtherDetails = itemView.findViewById(R.id.contactOtherDetails);
+            contactImage = itemView.findViewById(R.id.contactImage);
+            expandImage = itemView.findViewById(R.id.expand);
 
 
             itemView.setOnCreateContextMenuListener(this);
@@ -68,16 +60,15 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
             menu.setHeaderTitle("Select The Action");
             MenuItem delete = menu.add(Menu.NONE, 1, 1, "Delete Contact");//groupId, itemId, order, title
             MenuItem edit = menu.add(Menu.NONE, 2, 2, "Update Contact");
+            MenuItem upload = menu.add(Menu.NONE, 3, 3, "Upload Image");
             edit.setOnMenuItemClickListener(onEditMenu);
             delete.setOnMenuItemClickListener(onEditMenu);
+            upload.setOnMenuItemClickListener(onEditMenu);
         }
 
         private final MenuItem.OnMenuItemClickListener onEditMenu = new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                //Toast toast = null;
-                //int item_id = item.getItemId();
-                //new ContactListController().chooseOption(item_id, context, arrayList, item_position, toast);
 
                 switch (item.getItemId()) {
                     case 1:
@@ -86,6 +77,8 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
                     case 2:
                         actionListener.onUpdate(item_position);
                         break;
+                    case 3:
+                        actionListener.onUploadImage(item_position);
                 }
 
 
@@ -95,7 +88,6 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
 
 
     }
-
 
     @Override
     public int getItemCount() {
@@ -189,8 +181,30 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
 
     }
 
+    @Override
+    public void onBindViewHolder(final ViewHolder holder, int position, List<Object> payloads) {
+        if(payloads.isEmpty()) {
+            super.onBindViewHolder(holder, position, payloads);
+        } else {
+            Bundle bundle = (Bundle) payloads.get(0);
+            if (bundle.size() != 0) {
+                String image = bundle.getString("image");
+                if (image != "") {
+                    Glide.with(holder.itemView.getContext())
+                            .asDrawable()
+                            .load(image)
+                            //.apply(options)
+                            .into(holder.contactImage);
+                }
+
+            }
+        }
+
+    }
+
     public interface ContactActionListener{
         void onUpdate(int itemPosition);
         void onDelete(int itemPosition);
+        void onUploadImage(int itemPosition);
     }
 }

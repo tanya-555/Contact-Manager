@@ -37,15 +37,15 @@ public class UpdateContactController extends Controller {
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
 
         view = inflater.inflate(R.layout.update_contact_controller, container, false);
-        mobile_phone = (EditText) view.findViewById(R.id.new_mobile_phone);
-        work_phone = (EditText) view.findViewById(R.id.new_work_phone);
-        home_phone = (EditText) view.findViewById(R.id.new_home_phone);
-        work_email = (EditText) view.findViewById(R.id.new_work_email);
-        home_email = (EditText) view.findViewById(R.id.new_home_email);
-        company_name = (EditText) view.findViewById(R.id.new_company_name);
-        title = (EditText) view.findViewById(R.id.new_title);
+        mobile_phone = view.findViewById(R.id.new_mobile_phone);
+        work_phone = view.findViewById(R.id.new_work_phone);
+        home_phone = view.findViewById(R.id.new_home_phone);
+        work_email = view.findViewById(R.id.new_work_email);
+        home_email = view.findViewById(R.id.new_home_email);
+        company_name = view.findViewById(R.id.new_company_name);
+        title = view.findViewById(R.id.new_title);
 
-        update_contact = (Button) view.findViewById(R.id.update_contact);
+        update_contact = view.findViewById(R.id.update_contact);
         update_contact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,13 +74,13 @@ public class UpdateContactController extends Controller {
                           .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, home_phone.getText().toString())
                           .build());
               }
-
                   /*
                   phoneArgs = new String[]{contact_id, String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_HOME)};
                   ops.add(ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI)
                           .withSelection(selectPhone, phoneArgs)
                           .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, home_phone.getText().toString())
                           .build());
+                  */
 
                    if(String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_HOME)== null) {
 
@@ -99,7 +99,7 @@ public class UpdateContactController extends Controller {
                               .build());
                   }
 
-                   */
+
               if(!("").equals(work_phone.getText().toString())) {
                   phoneArgs = new String[]{contact_id, String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_WORK)};
                   ops.add(ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI)

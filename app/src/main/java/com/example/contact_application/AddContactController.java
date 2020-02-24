@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 
 import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.Router;
+import com.bluelinelabs.conductor.RouterTransaction;
 
 import java.util.ArrayList;
 
@@ -21,21 +22,20 @@ public class AddContactController extends Controller {
     private EditText contact_name, work_phone, mobile_phone, home_phone, work_email, home_email, company_name, title;
     private Button save_contact;
     private View view;
-    private Router router;
 
     @NonNull
     @Override
     protected View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         view = inflater.inflate(R.layout.add_contact_controller, container, false);
-        contact_name = (EditText) view.findViewById(R.id.contact_name);
-        home_phone = (EditText) view.findViewById(R.id.home_phone);
-        work_phone = (EditText) view.findViewById(R.id.work_phone);
-        mobile_phone = (EditText) view.findViewById(R.id.mobile_phone);
-        home_email = (EditText) view.findViewById(R.id.home_email);
-        work_email = (EditText) view.findViewById(R.id.work_email);
-        company_name = (EditText) view.findViewById(R.id.company_name);
-        title = (EditText) view.findViewById(R.id.title);
-        save_contact = (Button) view.findViewById(R.id.save_contact);
+        contact_name = view.findViewById(R.id.contact_name);
+        home_phone = view.findViewById(R.id.home_phone);
+        work_phone =  view.findViewById(R.id.work_phone);
+        mobile_phone =  view.findViewById(R.id.mobile_phone);
+        home_email = view.findViewById(R.id.home_email);
+        work_email = view.findViewById(R.id.work_email);
+        company_name = view.findViewById(R.id.company_name);
+        title = view.findViewById(R.id.title);
+        save_contact = view.findViewById(R.id.save_contact);
         save_contact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -44,9 +44,6 @@ public class AddContactController extends Controller {
         });
         return view;
     }
-
-
-
 
 
     private void addNewContact() {
@@ -121,6 +118,8 @@ public class AddContactController extends Controller {
         try {
             getApplicationContext().getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
             Toast.makeText(getApplicationContext(),"Contact added successfully", Toast.LENGTH_LONG).show();
+            getRouter().popController(this);
+
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(getApplicationContext(), "Exception: " + e.getMessage(), Toast.LENGTH_SHORT).show();
