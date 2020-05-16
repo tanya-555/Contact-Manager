@@ -179,6 +179,5 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
     public interface ContactActionListener{
         void onUpdate(int itemPosition);
         void onDelete(int itemPosition);
-        void onUploadImage(int itemPosition);
     }
 }
