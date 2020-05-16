@@ -81,7 +81,7 @@ public class ContactListController extends Controller {
         add_contact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                runThis(v);
+                launchController();
             }
         });
         return view;
@@ -89,7 +89,7 @@ public class ContactListController extends Controller {
 
 
 
-    public void runThis(View v) {
+    public void launchController() {
         getRouter().pushController(RouterTransaction.with(new AddContactController()));
 
     }

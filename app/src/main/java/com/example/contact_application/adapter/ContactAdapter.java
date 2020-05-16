@@ -58,7 +58,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             menu.setHeaderTitle("Select The Action");
-            MenuItem delete = menu.add(Menu.NONE, 1, 1, "Delete Contact");//groupId, itemId, order, title
+            MenuItem delete = menu.add(Menu.NONE, 1, 1, "Delete Contact");
             MenuItem edit = menu.add(Menu.NONE, 2, 2, "Update Contact");
             MenuItem upload = menu.add(Menu.NONE, 3, 3, "Upload Image");
             edit.setOnMenuItemClickListener(onEditMenu);
@@ -80,13 +80,9 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
                     case 3:
                         actionListener.onUploadImage(item_position);
                 }
-
-
                 return true;
             }
         };
-
-
     }
 
     @Override
@@ -104,7 +100,8 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
 
 
     public static long getContactID(ContentResolver contactHelper,String number) {
-        Uri contactUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
+        Uri contactUri = Uri.withAppendedPath(ContactsContract.
+                PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
         String[] projection = { ContactsContract.PhoneLookup._ID };
         Cursor cursor = null;
         try {
@@ -119,7 +116,6 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
         } finally {
             if (cursor != null) {
                 cursor.close();
-                cursor = null;
             }
         }
         return -1;

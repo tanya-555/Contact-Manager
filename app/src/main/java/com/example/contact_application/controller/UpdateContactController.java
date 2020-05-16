@@ -25,7 +25,7 @@ public class UpdateContactController extends Controller {
     private String contact_id;
 
     public UpdateContactController(Bundle args) {
-        //super(args);
+        super(args);
         contact_id = args.getString(ContactListController.CONTACT_ID);
     }
 

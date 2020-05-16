@@ -12,6 +12,11 @@
         <string name="image">image</string>
         <string name="contact_manager">CONTACT MANAGER</string>
         <string name="contacts">CONTACTS</string>
+        <string name="add_new_contact">ADD NEW CONTACT</string>
+        <string name="display_name">Display Name</string>
+        <string name="mobile_number">Mobile Number</string>
+        <string name="email_id">Email Id</string>
+        <string name="add">ADD</string>
     </resources>
 
 
