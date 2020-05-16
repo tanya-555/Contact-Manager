@@ -1,7 +1,11 @@
 package com.example.contact_application.adapter;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,7 +19,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -42,7 +48,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
         TextView contactName, contactNumber, contactEmail;
-        ImageView contactImage, expandImage;
+        ImageView contactImage, expandImage, callImage;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -51,6 +57,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
             contactEmail = itemView.findViewById(R.id.contactEmail);
             contactImage = itemView.findViewById(R.id.contactImage);
             expandImage = itemView.findViewById(R.id.expand);
+            callImage = itemView.findViewById(R.id.iv_call);
             itemView.setOnCreateContextMenuListener(this);
         }
 
@@ -124,11 +131,18 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
 
         model = arrayList.get(position);
 
         holder.expandImage.setImageResource(R.drawable.ic_playlist_add_black_24dp);
+
+        holder.callImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onCall(arrayList.get(position).getContactNumber());
+            }
+        });
 
         holder.expandImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,6 +182,14 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
                 holder.contactImage.setImageBitmap(Bitmap.createScaledBitmap(bitmap,
                         120,120, true));
             }
+    }
+
+    @SuppressLint("MissingPermission")
+    private void onCall(String contactNumber) {
+        Intent callIntent = new Intent(Intent.ACTION_CALL);
+        callIntent.setData(Uri.parse("tel:"+contactNumber));
+        callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(callIntent);
     }
 
     public interface ContactActionListener{
