@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFEEE2"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/contact_update_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="5dp"
+        android:text="EDIT DETAILS"
+        android:textColor="#ce3232"
+        android:textSize="40sp"
+        android:typeface="serif" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <EditText
+                android:id="@+id/new_mobile_phone"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:hint="Phone (Mobile)"
+                android:inputType="phone"
+                android:orientation="vertical"/>
+
+            <EditText
+                android:id="@+id/new_work_phone"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:hint="Phone (Work)"
+                android:inputType="phone"
+                android:orientation="vertical"/>
+
+            <EditText
+                android:id="@+id/new_home_phone"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:hint="Phone (Home)"
+                android:inputType="phone"
+                android:orientation="vertical"/>
+
+            <EditText
+                android:id="@+id/new_work_email"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:hint="Email id (Work)"
+                android:inputType="textEmailAddress"
+                android:orientation="vertical"/>
+
+            <EditText
+                android:id="@+id/new_home_email"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:hint="Email id (Home)"
+                android:inputType="textEmailAddress"
+                android:orientation="vertical"/>
+
+
+            <EditText
+                android:id="@+id/new_company_name"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:hint="Company Name"
+                android:inputType="textPersonName"
+                android:orientation="vertical"/>
+
+            <EditText
+                android:id="@+id/new_title"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:hint="Title"
+                android:inputType="textPersonName"
+                android:orientation="vertical"/>
+
+
+
+            <Button
+                android:id="@+id/update_contact"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@color/colorPrimaryDark"
+                android:elevation="4dp"
+                android:paddingLeft="70dp"
+                android:paddingRight="70dp"
+                android:text="UPDATE"
+                android:textColor="#fff" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
