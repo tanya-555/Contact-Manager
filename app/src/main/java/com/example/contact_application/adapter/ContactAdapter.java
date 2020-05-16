@@ -3,8 +3,9 @@ package com.example.contact_application.adapter;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -23,7 +24,7 @@ import com.example.contact_application.R;
 import com.example.contact_application.model.ContactModel;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHolder> {
     private Context context;
@@ -162,34 +163,17 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
             } else {
                 holder.contactEmail.setText(context.getString(R.string.NO_CONTACT_EMAIL));
             }
-
-            if (!model.getContactImage().equals("") && model.getContactImage() != null) {
-                Glide.with(context).load(Uri.parse(model.getContactImage())).apply(new RequestOptions().override(120, 120)).into(holder.contactImage);
+            //to check if there is an image already in contacts or not
+            byte[] repeatImage = new byte[100];
+            if(Arrays.equals(model.getContactImage(), repeatImage)) {
+                Glide.with(context).load(R.drawable.ic_person_black_24dp).apply(new RequestOptions().
+                        override(120, 120)).into(holder.contactImage);
             } else {
-                Glide.with(context).load(R.drawable.ic_person_black_24dp).apply(new RequestOptions().override(120, 120)).into(holder.contactImage);
+                Bitmap bitmap = BitmapFactory.decodeByteArray(model.getContactImage(),
+                        0, model.getContactImage().length);
+                holder.contactImage.setImageBitmap(Bitmap.createScaledBitmap(bitmap,
+                        120,120, true));
             }
-
-    }
-
-    @Override
-    public void onBindViewHolder(final ViewHolder holder, int position, List<Object> payloads) {
-        if(payloads.isEmpty()) {
-            super.onBindViewHolder(holder, position, payloads);
-        } else {
-            Bundle bundle = (Bundle) payloads.get(0);
-            if (bundle.size() != 0) {
-                String image = bundle.getString("image");
-                if (image != "") {
-                    Glide.with(holder.itemView.getContext())
-                            .asDrawable()
-                            .load(image)
-                            //.apply(options)
-                            .into(holder.contactImage);
-                }
-
-            }
-        }
-
     }
 
     public interface ContactActionListener{

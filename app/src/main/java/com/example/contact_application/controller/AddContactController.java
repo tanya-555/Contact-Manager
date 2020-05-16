@@ -2,6 +2,8 @@ package com.example.contact_application.controller;
 
 import android.content.ContentProviderOperation;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
@@ -19,6 +21,9 @@ import com.bluelinelabs.conductor.Controller;
 import com.example.contact_application.R;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import static android.app.Activity.RESULT_OK;
@@ -29,6 +34,9 @@ public class AddContactController extends Controller {
     private Button addContact;
     private ImageView contactImage;
     private View view;
+    private Uri selectedImage;
+    private byte[] selectedContactImage;
+    boolean isImageSelected = false;
 
     @NonNull
     @Override
@@ -64,8 +72,17 @@ public class AddContactController extends Controller {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == RESULT_OK) {
-            Uri selectedImage = data.getData();
-            Picasso.with(getActivity()).load(selectedImage).into(contactImage);
+            selectedImage = data.getData();
+            final InputStream imageStream;
+            try {
+                imageStream = getApplicationContext().getContentResolver().openInputStream(selectedImage);
+                final Bitmap chosenImage = BitmapFactory.decodeStream(imageStream);
+                selectedContactImage = toByteArray(chosenImage);
+                Picasso.with(getActivity()).load(selectedImage).into(contactImage);
+                isImageSelected = true;
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -117,6 +134,13 @@ public class AddContactController extends Controller {
                             ContactsContract.CommonDataKinds.Email.TYPE_WORK).build());
         }
 
+        if(isImageSelected) {
+            ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                    .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE)
+                    .withValue(ContactsContract.CommonDataKinds.Photo.PHOTO, selectedContactImage).build());
+        }
+
         try {
             getApplicationContext().getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
             Toast.makeText(getApplicationContext(),"Contact added successfully", Toast.LENGTH_LONG).show();
@@ -134,6 +158,12 @@ public class AddContactController extends Controller {
             return false;
         }
         return true;
+    }
+
+    private byte[] toByteArray(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream);
+        return stream.toByteArray();
     }
 
 }

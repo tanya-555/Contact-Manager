@@ -13,6 +13,7 @@
         android:src="@drawable/contacts" />
 
     <TextView
+        android:id="@+id/tv_cm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/contact_image"
@@ -22,5 +23,16 @@
         android:textColor="@color/color_fg"
         android:textSize="@dimen/size_25dp"
         android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_cm"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="@dimen/size_20dp"
+        android:text="Loading..."
+        android:textColor="@color/color_fg"
+        android:textSize="15dp"
+        android:textStyle="italic" />
 
 </RelativeLayout>

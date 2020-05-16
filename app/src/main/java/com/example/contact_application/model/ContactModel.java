@@ -3,9 +3,10 @@ package com.example.contact_application.model;
 
 public class ContactModel {
 
-    private String contactNumber, contactName, contactEmail, contactImage;
+    private String contactNumber, contactName, contactEmail;
+    private byte[] contactImage;
 
-    public ContactModel(String contactName, String contactNumber, String contactEmail, String contactImage) {
+    public ContactModel(String contactName, String contactNumber, String contactEmail, byte[] contactImage) {
         this.contactNumber = contactNumber;
         this.contactName = contactName;
         this.contactEmail = contactEmail;
@@ -20,6 +21,6 @@ public class ContactModel {
 
     public String getContactEmail() { return contactEmail;}
 
-    public String getContactImage() { return contactImage; }
+    public byte[] getContactImage() { return contactImage; }
 
 }

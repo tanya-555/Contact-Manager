@@ -3,7 +3,6 @@ package com.example.contact_application.controller;
 import android.Manifest;
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.content.pm.PackageManager;
@@ -23,7 +22,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -40,7 +38,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 
 import static android.app.Activity.RESULT_OK;
 import static com.example.contact_application.adapter.ContactAdapter.getContactID;
@@ -332,7 +329,7 @@ public class ContactListController extends Controller {
                     String displayName = "";
                     String contactNumber = "";
                     String contactEmail = "";
-                    String contactImage = "";
+                    byte[] contactImage = new byte[100];
 
                     if (dataCursor.moveToFirst()) {
                         displayName = dataCursor.getString(dataCursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
@@ -347,12 +344,18 @@ public class ContactListController extends Controller {
                                 contactEmail = dataCursor.getString(dataCursor.getColumnIndex("data1"));
                             }
 
+//                            if (dataCursor.getString(dataCursor.getColumnIndex("mimetype")).
+//                                    equals(ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE)) {
+//                                Uri contactImageUri = Uri.withAppendedPath(ContentUris.
+//                                        withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId),
+//                                        ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
+//                                contactImage = contactImageUri.toString();
+//                            }
+
                             if (dataCursor.getString(dataCursor.getColumnIndex("mimetype")).
                                     equals(ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE)) {
-                                Uri contactImageUri = Uri.withAppendedPath(ContentUris.
-                                        withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId),
-                                        ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
-                                contactImage = contactImageUri.toString();
+                                contactImage =  dataCursor.getBlob(dataCursor.getColumnIndex("data15"));
+
                             }
                         } while (dataCursor.moveToNext());
                         dataCursor.close();
