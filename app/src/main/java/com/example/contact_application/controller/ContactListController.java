@@ -51,15 +51,12 @@ public class ContactListController extends Controller {
     public ContactAdapter adapter;
     private ProgressBar progressBar;
     private FloatingActionButton add_contact;
-    private boolean result = false;
     View view;
     Toast toast = null;
-    byte[] contactImage;
     String contact_id;
     Long raw_contact_id;
 
     private static final int REQUEST_CODE = 1000;
-    private static final int RESULT_LOAD_IMG = 1111;
 
 
     public ContactListController() {
@@ -117,19 +114,6 @@ public class ContactListController extends Controller {
             }
         }
 
-        @Override
-        public void onUploadImage(int itemPosition) {
-            raw_contact_id = getContactID(getApplicationContext().getContentResolver(), arrayList.get(itemPosition).getContactNumber());
-            contact_id = String.valueOf(raw_contact_id);
-            uploadImage(getApplicationContext().getContentResolver(), arrayList.get(itemPosition).getContactNumber(), adapter, itemPosition);
-            if(result == true) {
-                toast = Toast.makeText(getApplicationContext(), "Image uploaded successfully", Toast.LENGTH_LONG);
-                toast.show();
-            } else {
-                toast = Toast.makeText(getApplicationContext(), "Failed to upload image! Try again later", Toast.LENGTH_LONG);
-                toast.show();
-            }
-        }
     };
 
     public boolean deleteContact(ContentResolver contactHelper, String number, ContactAdapter adapter, int item_position) {
@@ -148,114 +132,6 @@ public class ContactListController extends Controller {
             e.printStackTrace();
         }
         return false;
-    }
-
-    public void uploadImage(ContentResolver contactHelper, String number, ContactAdapter adapter, int item_position) {
-        raw_contact_id = getContactID(contactHelper, number);
-        contact_id = String.valueOf(raw_contact_id);
-        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-        photoPickerIntent.setType("image/*");
-        startActivityForResult(photoPickerIntent, RESULT_LOAD_IMG);
-    }
-
-    @Override
-    public void onActivityResult(int reqCode, int resultCode, Intent data) {
-        super.onActivityResult(reqCode, resultCode, data);
-
-
-        if (resultCode == RESULT_OK && reqCode == RESULT_LOAD_IMG) {
-            try {
-                result = true;
-                Toast.makeText(getApplicationContext(), "successfully uploaded", Toast.LENGTH_LONG);
-                final Uri imageUri = data.getData();
-                final InputStream imageStream = getApplicationContext().getContentResolver().openInputStream(imageUri);
-                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                contactImage = toByteArray(selectedImage);
-                //Long contactId = Long.parseLong(contact_id);
-                updateContactImage(raw_contact_id,contactImage);
-                //image_view.setImageBitmap(selectedImage);
-
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_LONG).show();
-            }
-
-        }else {
-            Toast.makeText(getApplicationContext(), "You haven't picked Image",Toast.LENGTH_LONG).show();
-        }
-    }
-
-
-    public void updateContactImage(Long rawContactId, byte[] photo) {
-
-/*
-        Uri rawContactPhotoUri = Uri.withAppendedPath(
-                ContentUris.withAppendedId(ContactsContract.RawContacts.CONTENT_URI, rawContactId),
-                ContactsContract.RawContacts.DisplayPhoto.CONTENT_DIRECTORY);
-        try {
-            AssetFileDescriptor fd = getApplicationContext().getContentResolver().openAssetFileDescriptor(rawContactPhotoUri, "w");
-            OutputStream os = fd.createOutputStream();
-            os.write(photo);
-            os.close();
-            fd.close();
-            adapter.notifyDataSetChanged();
-        } catch (IOException e) {
-            // Handle error cases.
-        }
-        */
-
-         // getApplicationContext().getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
-
-        //ContentResolver resolver = getActivity().getContentResolver();
-        /*
-            int photoRow = -1;
-            String where = ContactsContract.Data.RAW_CONTACT_ID + " = " + rawContactId
-                    + " AND " + ContactsContract.Data.MIMETYPE + " =='" + ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE + "'";
-            Cursor cursor = resolver.query(ContactsContract.Data.CONTENT_URI, null, where, null, null);
-            int idIdx = cursor.getColumnIndexOrThrow(ContactsContract.Data._ID);
-            if (cursor.moveToFirst()) {
-                photoRow = cursor.getInt(idIdx);
-            }
-            cursor.close();
-
-        ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
-        ops.add(ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI)
-                .withSelection(ContactsContract.Data._ID + " = ?", new String[] {Integer.toString(photoRow)})
-                .withValue(ContactsContract.Data.RAW_CONTACT_ID, rawContactId)
-                .withValue(ContactsContract.Data.IS_SUPER_PRIMARY, 1)
-                .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE)
-                .withValue(ContactsContract.Data.DATA15, photo)
-                .build());
-
- */
-
-        ArrayList<ContentProviderOperation> ops = new ArrayList<>();
-        String selectPhoto = ContactsContract.Data.CONTACT_ID + "=?" ;
-            String[] photoArgs = new String[]{contact_id};
-            ops.add(ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI)
-                    .withSelection(selectPhoto, photoArgs)
-                    .withValue(ContactsContract.CommonDataKinds.Photo.DATA15, photo)
-                    .build());
-
-
-        try {
-            getApplicationContext().getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
-        } catch (RemoteException e) {
-
-        } catch (OperationApplicationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-    }
-
-
-    //function to convert bitmap image to byte array
-    public byte[] toByteArray(Bitmap bitmap) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream);
-        return stream.toByteArray();
     }
 
     //Nested class
@@ -343,14 +219,6 @@ public class ContactListController extends Controller {
                                     equals(ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE)) {
                                 contactEmail = dataCursor.getString(dataCursor.getColumnIndex("data1"));
                             }
-
-//                            if (dataCursor.getString(dataCursor.getColumnIndex("mimetype")).
-//                                    equals(ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE)) {
-//                                Uri contactImageUri = Uri.withAppendedPath(ContentUris.
-//                                        withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId),
-//                                        ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
-//                                contactImage = contactImageUri.toString();
-//                            }
 
                             if (dataCursor.getString(dataCursor.getColumnIndex("mimetype")).
                                     equals(ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE)) {

@@ -50,8 +50,6 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
             contactEmail = itemView.findViewById(R.id.contactEmail);
             contactImage = itemView.findViewById(R.id.contactImage);
             expandImage = itemView.findViewById(R.id.expand);
-
-
             itemView.setOnCreateContextMenuListener(this);
         }
 
@@ -60,11 +58,9 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             menu.setHeaderTitle("Select The Action");
             MenuItem delete = menu.add(Menu.NONE, 1, 1, "Delete Contact");
-            MenuItem edit = menu.add(Menu.NONE, 2, 2, "Update Contact");
-            MenuItem upload = menu.add(Menu.NONE, 3, 3, "Upload Image");
+            MenuItem edit = menu.add(Menu.NONE, 2, 2, "Edit Contact");
             edit.setOnMenuItemClickListener(onEditMenu);
             delete.setOnMenuItemClickListener(onEditMenu);
-            upload.setOnMenuItemClickListener(onEditMenu);
         }
 
         private final MenuItem.OnMenuItemClickListener onEditMenu = new MenuItem.OnMenuItemClickListener() {
@@ -77,9 +73,6 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
                         break;
                     case 2:
                         actionListener.onUpdate(item_position);
-                        break;
-                    case 3:
-                        actionListener.onUploadImage(item_position);
                 }
                 return true;
             }
