@@ -1,8 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="200dp"
-    android:background="#FFEEE2"
     android:padding="5dp" >
 
     <ImageView
@@ -10,7 +8,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/image"
-        android:padding="2dp" />
+        android:padding="4dp"
+        android:layout_marginStart="1dp"/>
 
     <TextView
         android:id="@+id/contactName"
@@ -24,8 +23,8 @@
         android:layout_marginLeft="5dp"
         android:layout_marginTop="-4dp"
         android:lineSpacingExtra="3dp"
+        android:textColor="@color/color_black"
         android:padding="5dp"
-        android:textColor="#000000"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -34,6 +33,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/contactName"
+        android:textColor="@color/color_black"
         android:lineSpacingExtra="3dp"
         android:padding="5dp"
         android:textSize="15sp" />
@@ -43,15 +43,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/contactNumber"
-        android:lineSpacingExtra="3dp"
-        android:padding="5dp"
-        android:textSize="15sp" />
-
-    <TextView
-        android:id="@+id/contactOtherDetails"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/contactEmail"
+        android:textColor="@color/color_black"
         android:lineSpacingExtra="3dp"
         android:padding="5dp"
         android:textSize="15sp" />

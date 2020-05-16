@@ -39,7 +39,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
-        TextView contactName, contactNumber, contactEmail, contactOtherDetails;
+        TextView contactName, contactNumber, contactEmail;
         ImageView contactImage, expandImage;
 
         public ViewHolder(View itemView) {
@@ -47,7 +47,6 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
             contactName = itemView.findViewById(R.id.contactName);
             contactNumber = itemView.findViewById(R.id.contactNumber);
             contactEmail = itemView.findViewById(R.id.contactEmail);
-            contactOtherDetails = itemView.findViewById(R.id.contactOtherDetails);
             contactImage = itemView.findViewById(R.id.contactImage);
             expandImage = itemView.findViewById(R.id.expand);
 
@@ -166,12 +165,6 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
                 holder.contactEmail.setText(model.getContactEmail());
             } else {
                 holder.contactEmail.setText(context.getString(R.string.NO_CONTACT_EMAIL));
-            }
-
-            if (!("").equals(model.getContactOtherDetails()) && model.getContactOtherDetails() != null) {
-                holder.contactOtherDetails.setText(model.getContactOtherDetails());
-            } else {
-                holder.contactOtherDetails.setText(context.getString(R.string.NO_CONTACT_OTHER_DETAILS));
             }
 
             if (!model.getContactImage().equals("") && model.getContactImage() != null) {

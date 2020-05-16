@@ -267,14 +267,13 @@ public class ContactListController extends Controller {
 
         @Override
         protected Void doInBackground(Void... params) {
-            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED) {
+            while (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED) {
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS}, REQUEST_CODE);
-            } else {
-                arrayList = readContacts();
             }
-            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_DENIED) {
+            while (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_DENIED) {
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_CONTACTS}, REQUEST_CODE);
             }
+            arrayList = readContacts();
             return null;
         }
 
@@ -288,6 +287,8 @@ public class ContactListController extends Controller {
         public void onPostExecute(Void result) {
 
             if (arrayList != null && arrayList.size() > 0) {
+                String msg = String.format("%d contacts fetched", arrayList.size());
+                Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
                 adapter = null;
                 if (adapter == null) {
                     adapter = new ContactAdapter(getActivity(), arrayList, listener);
@@ -310,16 +311,17 @@ public class ContactListController extends Controller {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                new LoadContacts().execute();
+                arrayList = readContacts();
             }
         }
     }
 
 
     private ArrayList<ContactModel> readContacts() {
-        ArrayList<ContactModel> contactList = new ArrayList<ContactModel>();
+        ArrayList<ContactModel> contactList = new ArrayList<>();
         Uri uri = ContactsContract.Contacts.CONTENT_URI;
-        Cursor contactsCursor = getActivity().getContentResolver().query(uri, null, null, null, ContactsContract.Contacts.DISPLAY_NAME + " ASC ");
+        Cursor contactsCursor = getActivity().getContentResolver().query(uri, null,
+                null, null, ContactsContract.Contacts.DISPLAY_NAME + " ASC ");
         try {
             if (contactsCursor.moveToFirst()) {
                 do {
@@ -330,71 +332,31 @@ public class ContactListController extends Controller {
                     String displayName = "";
                     String contactNumber = "";
                     String contactEmail = "";
-                    String contactOtherDetails = "";
-                    String homePhone;
-                    String workPhone;
-                    String mobilePhone;
-                    String homeEmail;
-                    String workEmail;
-                    String companyName;
-                    String title;
                     String contactImage = "";
 
                     if (dataCursor.moveToFirst()) {
                         displayName = dataCursor.getString(dataCursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
                         do {
-                            if (dataCursor.getString(dataCursor.getColumnIndex("mimetype")).equals(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)) {
-                                switch (dataCursor.getInt(dataCursor.getColumnIndex("data2"))) {
-                                    case ContactsContract.CommonDataKinds.Phone.TYPE_HOME:
-                                        homePhone = dataCursor.getString(dataCursor.getColumnIndex("data1"));
-                                        contactNumber += homePhone + "   ";
-                                        break;
-
-                                    case ContactsContract.CommonDataKinds.Phone.TYPE_WORK:
-                                        workPhone = dataCursor.getString(dataCursor.getColumnIndex("data1"));
-                                        contactNumber += workPhone + "   ";
-                                        break;
-
-                                    case ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE:
-                                        mobilePhone = dataCursor.getString(dataCursor.getColumnIndex("data1"));
-                                        contactNumber += mobilePhone + "   ";
-                                        break;
-
-                                }
+                            if (dataCursor.getString(dataCursor.getColumnIndex("mimetype")).
+                                    equals(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)) {
+                                contactNumber = dataCursor.getString(dataCursor.getColumnIndex("data1"));
                             }
 
-                            if (dataCursor.getString(dataCursor.getColumnIndex("mimetype")).equals(ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE)) {
-
-                                switch (dataCursor.getInt(dataCursor.getColumnIndex("data2"))) {
-                                    case ContactsContract.CommonDataKinds.Email.TYPE_HOME:
-                                        homeEmail = dataCursor.getString(dataCursor.getColumnIndex("data1"));
-                                        contactEmail += homeEmail + "   ";
-                                        break;
-                                    case ContactsContract.CommonDataKinds.Email.TYPE_WORK:
-                                        workEmail = dataCursor.getString(dataCursor.getColumnIndex("data1"));
-                                        contactEmail += workEmail + "   ";
-                                        break;
-
-                                }
+                            if (dataCursor.getString(dataCursor.getColumnIndex("mimetype")).
+                                    equals(ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE)) {
+                                contactEmail = dataCursor.getString(dataCursor.getColumnIndex("data1"));
                             }
 
-                            if (dataCursor.getString(dataCursor.getColumnIndex("mimetype")).equals(ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE)) {
-                                companyName = dataCursor.getString(dataCursor.getColumnIndex("data1"));
-                                contactOtherDetails += "Company Name : " + companyName + "   ";
-                                title = dataCursor.getString(dataCursor.getColumnIndex("data4"));
-                                contactOtherDetails += "Title : " + title + "   ";
-                            }
-
-                            if (dataCursor.getString(dataCursor.getColumnIndex("mimetype")).equals(ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE)) {
-                                Uri contactImageUri = Uri.withAppendedPath(ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId), ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
+                            if (dataCursor.getString(dataCursor.getColumnIndex("mimetype")).
+                                    equals(ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE)) {
+                                Uri contactImageUri = Uri.withAppendedPath(ContentUris.
+                                        withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId),
+                                        ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
                                 contactImage = contactImageUri.toString();
                             }
-
-
-
                         } while (dataCursor.moveToNext());
                         dataCursor.close();
-                        contactList.add(new ContactModel(displayName, contactNumber, contactEmail, contactOtherDetails, contactImage));
+                        contactList.add(new ContactModel(displayName, contactNumber, contactEmail, contactImage));
                     }
                 } while (contactsCursor.moveToNext());
             }
@@ -404,7 +366,4 @@ public class ContactListController extends Controller {
         contactsCursor.close();
         return contactList;
     }
-
-
-
 }

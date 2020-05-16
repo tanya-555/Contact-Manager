@@ -19,7 +19,7 @@
         android:layout_centerInParent="true"
         android:layout_marginTop="@dimen/size_20dp"
         android:text="@string/contact_manager"
-        android:textColor="#284f6f"
+        android:textColor="@color/color_fg"
         android:textSize="@dimen/size_25dp"
         android:textStyle="bold" />
 

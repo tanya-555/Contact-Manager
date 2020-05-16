@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 MainActivity.this.runOnUiThread(new Runnable() {
                     public void run() {
+                        finish();
                         startActivity(new Intent(MainActivity.this, SecondActivity.class));
                     }
                 });
