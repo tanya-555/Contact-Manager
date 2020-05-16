@@ -1,12 +1,8 @@
-package com.example.contact_application;
+package com.example.contact_application.controller;
 
 import android.content.ContentProviderOperation;
-import android.content.ContentResolver;
-import android.content.OperationApplicationException;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.bluelinelabs.conductor.Controller;
+import com.example.contact_application.R;
 
 import java.util.ArrayList;
 

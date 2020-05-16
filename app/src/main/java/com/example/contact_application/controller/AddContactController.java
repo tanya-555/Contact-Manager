@@ -1,4 +1,4 @@
-package com.example.contact_application;
+package com.example.contact_application.controller;
 
 import android.content.ContentProviderOperation;
 import android.provider.ContactsContract;
@@ -12,8 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.bluelinelabs.conductor.Controller;
-import com.bluelinelabs.conductor.Router;
-import com.bluelinelabs.conductor.RouterTransaction;
+import com.example.contact_application.R;
 
 import java.util.ArrayList;
 

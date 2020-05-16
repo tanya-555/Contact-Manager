@@ -1,7 +1,5 @@
-package com.example.contact_application;
+package com.example.contact_application.model;
 
-
-import android.net.Uri;
 
 public class ContactModel {
 

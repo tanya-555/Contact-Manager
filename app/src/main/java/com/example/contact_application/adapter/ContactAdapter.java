@@ -1,4 +1,4 @@
-package com.example.contact_application;
+package com.example.contact_application.adapter;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -15,11 +15,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.contact_application.R;
+import com.example.contact_application.model.ContactModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
     ContactActionListener actionListener;
 
 
-    ContactAdapter(Context context, ArrayList<ContactModel> arrayList, ContactActionListener actionListener) {
+    public ContactAdapter(Context context, ArrayList<ContactModel> arrayList, ContactActionListener actionListener) {
         this.context = context;
         this.actionListener = actionListener;
         this.arrayList = arrayList;

@@ -1,15 +1,12 @@
-package com.example.contact_application;
+package com.example.contact_application.controller;
 
 import android.Manifest;
-import android.content.ContentProvider;
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.ContentUris;
-import android.content.Context;
 import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.content.pm.PackageManager;
-import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,16 +15,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.provider.ContactsContract;
-import android.provider.MediaStore;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -39,21 +30,20 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bluelinelabs.conductor.Controller;
-
 import com.bluelinelabs.conductor.RouterTransaction;
+import com.example.contact_application.R;
+import com.example.contact_application.adapter.ContactAdapter;
+import com.example.contact_application.model.ContactModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 
 import static android.app.Activity.RESULT_OK;
-import static com.example.contact_application.ContactAdapter.getContactID;
-import static java.util.Collections.sort;
+import static com.example.contact_application.adapter.ContactAdapter.getContactID;
 
 public class ContactListController extends Controller {
     private static final String TAG = ContactListController.class.getSimpleName();
@@ -298,11 +288,8 @@ public class ContactListController extends Controller {
         public void onPostExecute(Void result) {
 
             if (arrayList != null && arrayList.size() > 0) {
-
-                ((AppCompatActivity)getActivity()).getSupportActionBar().setSubtitle(arrayList.size() + " Contacts");
                 adapter = null;
                 if (adapter == null) {
-                    Collections.sort(arrayList, new SortByName());
                     adapter = new ContactAdapter(getActivity(), arrayList, listener);
                     LinearLayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
                     contact_recyclerview.setLayoutManager(mLayoutManager);
