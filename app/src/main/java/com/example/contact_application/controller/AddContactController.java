@@ -1,6 +1,8 @@
 package com.example.contact_application.controller;
 
 import android.content.ContentProviderOperation;
+import android.content.Intent;
+import android.net.Uri;
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,11 +13,15 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.bluelinelabs.conductor.Controller;
 import com.example.contact_application.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import static android.app.Activity.RESULT_OK;
 
 public class AddContactController extends Controller {
 
@@ -39,9 +45,29 @@ public class AddContactController extends Controller {
                 addNewContact();
             }
         });
+        initSelectImageListener();
         return view;
     }
 
+    private void initSelectImageListener() {
+        contactImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent pickPhoto = new Intent(Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(pickPhoto , 1);
+            }
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            Uri selectedImage = data.getData();
+            Picasso.with(getActivity()).load(selectedImage).into(contactImage);
+        }
+    }
 
     private void addNewContact() {
         ArrayList <ContentProviderOperation> ops = new ArrayList< ContentProviderOperation >();
