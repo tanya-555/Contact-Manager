@@ -31,6 +31,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
     private ArrayList<ContactModel> arrayList;
     public int item_position;
     ContactActionListener actionListener;
+    private ContactModel model;
 
 
     public ContactAdapter(Context context, ArrayList<ContactModel> arrayList, ContactActionListener actionListener) {
@@ -72,7 +73,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
                         actionListener.onDelete(item_position);
                         break;
                     case 2:
-                        actionListener.onUpdate(item_position);
+                        actionListener.onUpdate(item_position, model);
                 }
                 return true;
             }
@@ -125,7 +126,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
-        ContactModel model = arrayList.get(position);
+        model = arrayList.get(position);
 
         holder.expandImage.setImageResource(R.drawable.ic_playlist_add_black_24dp);
 
@@ -170,7 +171,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
     }
 
     public interface ContactActionListener{
-        void onUpdate(int itemPosition);
+        void onUpdate(int itemPosition, ContactModel model);
         void onDelete(int itemPosition);
     }
 }

@@ -46,9 +46,13 @@ public class ContactListController extends Controller {
     private static final String TAG = ContactListController.class.getSimpleName();
 
     public static final String CONTACT_ID = "contact_id";
+    public static final String CONTACT_NAME = "contact_name";
+    public static final String CONTACT_NUMBER = "contact_number";
+    public static final String CONTACT_EMAIL = "contact_email";
+    public static final String CONTACT_IMAGE = "contact_image";
     private RecyclerView contact_recyclerview;
     private static ArrayList<ContactModel> arrayList;
-    public ContactAdapter adapter;
+    private ContactAdapter adapter;
     private ProgressBar progressBar;
     private FloatingActionButton add_contact;
     View view;
@@ -83,7 +87,7 @@ public class ContactListController extends Controller {
 
 
 
-    public void launchController() {
+    private void launchController() {
         getRouter().pushController(RouterTransaction.with(new AddContactController()));
 
     }
@@ -91,12 +95,16 @@ public class ContactListController extends Controller {
 
     ContactAdapter.ContactActionListener listener = new ContactAdapter.ContactActionListener() {
         @Override
-        public void onUpdate(int itemPosition) {
+        public void onUpdate(int itemPosition, ContactModel model) {
 
             raw_contact_id = getContactID(getApplicationContext().getContentResolver(), arrayList.get(itemPosition).getContactNumber());
             contact_id = String.valueOf(raw_contact_id);
             Bundle args = new Bundle();
             args.putString(CONTACT_ID, contact_id);
+            args.putString(CONTACT_NAME, model.getContactName());
+            args.putString(CONTACT_NUMBER, model.getContactNumber());
+            args.putString(CONTACT_EMAIL, model.getContactEmail());
+            args.putByteArray(CONTACT_IMAGE, model.getContactImage());
             getRouter().pushController(RouterTransaction.with(new UpdateContactController(args)));
         }
 
