@@ -190,17 +190,6 @@ public class ContactListController extends Controller {
 
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CODE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                arrayList = readContacts();
-            }
-        }
-    }
-
-
     private ArrayList<ContactModel> readContacts() {
         ArrayList<ContactModel> contactList = new ArrayList<>();
         Uri uri = ContactsContract.Contacts.CONTENT_URI;
