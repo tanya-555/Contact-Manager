@@ -5,8 +5,8 @@
 
     <ImageView
         android:id="@+id/contactImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:contentDescription="@string/image"
         android:padding="4dp"
         android:layout_marginStart="1dp"/>
@@ -60,8 +60,9 @@
 
     <ImageView
         android:id="@+id/expand"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_marginLeft = "300dp"
         android:padding="4dp" />
 

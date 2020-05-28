@@ -1,11 +1,9 @@
 package com.example.contact_application.adapter;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,9 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -79,8 +74,6 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
                     case 1:
                         actionListener.onDelete(item_position);
                         break;
-                    case 2:
-                        actionListener.onUpdate(item_position, model);
                 }
                 return true;
             }
@@ -135,7 +128,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
 
         model = arrayList.get(position);
 
-        holder.expandImage.setImageResource(R.drawable.ic_playlist_add_black_24dp);
+        holder.expandImage.setImageResource(R.drawable.cross);
 
         holder.callImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -193,7 +186,6 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
     }
 
     public interface ContactActionListener{
-        void onUpdate(int itemPosition, ContactModel model);
         void onDelete(int itemPosition);
     }
 }

@@ -45,11 +45,6 @@ import static com.example.contact_application.adapter.ContactAdapter.getContactI
 public class ContactListController extends Controller {
     private static final String TAG = ContactListController.class.getSimpleName();
 
-    public static final String CONTACT_ID = "contact_id";
-    public static final String CONTACT_NAME = "contact_name";
-    public static final String CONTACT_NUMBER = "contact_number";
-    public static final String CONTACT_EMAIL = "contact_email";
-    public static final String CONTACT_IMAGE = "contact_image";
     private RecyclerView contact_recyclerview;
     private static ArrayList<ContactModel> arrayList;
     private ContactAdapter adapter;
@@ -94,19 +89,6 @@ public class ContactListController extends Controller {
 
 
     ContactAdapter.ContactActionListener listener = new ContactAdapter.ContactActionListener() {
-        @Override
-        public void onUpdate(int itemPosition, ContactModel model) {
-
-            raw_contact_id = getContactID(getApplicationContext().getContentResolver(), arrayList.get(itemPosition).getContactNumber());
-            contact_id = String.valueOf(raw_contact_id);
-            Bundle args = new Bundle();
-            args.putString(CONTACT_ID, contact_id);
-            args.putString(CONTACT_NAME, model.getContactName());
-            args.putString(CONTACT_NUMBER, model.getContactNumber());
-            args.putString(CONTACT_EMAIL, model.getContactEmail());
-            args.putByteArray(CONTACT_IMAGE, model.getContactImage());
-            getRouter().pushController(RouterTransaction.with(new UpdateContactController(args)));
-        }
 
         @Override
         public void onDelete(int itemPosition) {
