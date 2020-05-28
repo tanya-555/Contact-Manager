@@ -177,7 +177,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
 
     @SuppressLint("MissingPermission")
     private void onCall(String contactNumber) {
-        Intent callIntent = new Intent(Intent.ACTION_CALL);
+        Intent callIntent = new Intent(Intent.ACTION_DIAL);
         callIntent.setData(Uri.parse("tel:"+contactNumber));
         callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(callIntent);
