@@ -59,10 +59,8 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            menu.setHeaderTitle("Select The Action");
+            menu.setHeaderTitle("Do you want to proceed?");
             MenuItem delete = menu.add(Menu.NONE, 1, 1, "Delete Contact");
-            MenuItem edit = menu.add(Menu.NONE, 2, 2, "Edit Contact");
-            edit.setOnMenuItemClickListener(onEditMenu);
             delete.setOnMenuItemClickListener(onEditMenu);
         }
 
