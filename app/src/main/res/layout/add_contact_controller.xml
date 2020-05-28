@@ -21,72 +21,87 @@
     </androidx.appcompat.widget.Toolbar>
 
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_below="@+id/toolbar"
         android:layout_centerInParent="true"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="30dp"
         android:fitsSystemWindows="true"
+        android:layout_alignParentBottom="true"
         android:padding="40dp">
 
-        <ImageView
-            android:id="@+id/iv_photo"
-            android:layout_width="130dp"
-            android:layout_height="100dp"
-            android:layout_marginStart="40dp"
-            android:src="@drawable/camera"/>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <EditText
-            android:id="@+id/tv_name"
-            android:layout_width="200dp"
-            android:layout_height="70dp"
-            android:layout_below="@+id/iv_photo"
-            android:layout_marginTop="@dimen/size_20dp"
-            android:backgroundTint="@color/color_fg"
-            android:hint="@string/display_name"
-            android:imeOptions="actionDone"
-            android:inputType="textPersonName"
-            android:textColor="@color/color_fg"
-            android:textColorHint="@color/color_fg"
-            android:textCursorDrawable="@color/color_fg" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center">
 
-        <EditText
-            android:id="@+id/tv_number"
-            android:layout_width="200dp"
-            android:layout_height="70dp"
-            android:layout_below="@+id/tv_name"
-            android:backgroundTint="@color/color_fg"
-            android:hint="@string/mobile_number"
-            android:imeOptions="actionDone"
-            android:inputType="number"
-            android:textColor="@color/color_fg"
-            android:textColorHint="@color/color_fg"
-            android:textCursorDrawable="@color/color_fg" />
+                <ImageView
+                    android:id="@+id/iv_photo"
+                    android:layout_width="130dp"
+                    android:layout_height="100dp"
+                    android:layout_marginStart="40dp"
+                    android:src="@drawable/camera"/>
 
-        <EditText
-            android:id="@+id/tv_email"
-            android:layout_width="200dp"
-            android:layout_height="70dp"
-            android:layout_below="@+id/tv_number"
-            android:backgroundTint="@color/color_fg"
-            android:hint="@string/email_id"
-            android:imeOptions="actionDone"
-            android:inputType="textEmailAddress"
-            android:textColor="@color/color_fg"
-            android:textColorHint="@color/color_fg"
-            android:textCursorDrawable="@color/color_fg" />
+                <EditText
+                    android:id="@+id/tv_name"
+                    android:layout_width="200dp"
+                    android:layout_height="70dp"
+                    android:layout_below="@+id/iv_photo"
+                    android:layout_marginTop="@dimen/size_20dp"
+                    android:backgroundTint="@color/color_fg"
+                    android:hint="@string/display_name"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPersonName"
+                    android:textColor="@color/color_fg"
+                    android:textColorHint="@color/color_fg"
+                    android:textCursorDrawable="@color/color_fg" />
 
-        <Button
-            android:id="@+id/add_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_email"
-            android:layout_marginStart="50dp"
-            android:layout_marginTop="@dimen/size_20dp"
-            android:backgroundTint="@color/color_fg"
-            android:padding="@dimen/size_20dp"
-            android:text="@string/add"
-            android:textColor="@color/color_bg" />
+                <EditText
+                    android:id="@+id/tv_number"
+                    android:layout_width="200dp"
+                    android:layout_height="70dp"
+                    android:layout_below="@+id/tv_name"
+                    android:backgroundTint="@color/color_fg"
+                    android:hint="@string/mobile_number"
+                    android:imeOptions="actionDone"
+                    android:inputType="number"
+                    android:textColor="@color/color_fg"
+                    android:textColorHint="@color/color_fg"
+                    android:textCursorDrawable="@color/color_fg" />
+
+                <EditText
+                    android:id="@+id/tv_email"
+                    android:layout_width="200dp"
+                    android:layout_height="70dp"
+                    android:layout_below="@+id/tv_number"
+                    android:backgroundTint="@color/color_fg"
+                    android:hint="@string/email_id"
+                    android:imeOptions="actionDone"
+                    android:inputType="textEmailAddress"
+                    android:textColor="@color/color_fg"
+                    android:textColorHint="@color/color_fg"
+                    android:textCursorDrawable="@color/color_fg" />
+
+                <Button
+                    android:id="@+id/add_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_email"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginTop="@dimen/size_20dp"
+                    android:backgroundTint="@color/color_fg"
+                    android:padding="@dimen/size_20dp"
+                    android:text="@string/add"
+                    android:textColor="@color/color_bg" />
+
+            </RelativeLayout>
+
+        </ScrollView>
 
     </RelativeLayout>
 </RelativeLayout>
