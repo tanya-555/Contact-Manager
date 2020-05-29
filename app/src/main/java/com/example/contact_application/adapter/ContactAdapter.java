@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -92,13 +93,13 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
     }
 
 
-    public static long getContactID(ContentResolver contactHelper,String number) {
+    public static long getContactID(ContentResolver contactHelper, String number) {
         Uri contactUri = Uri.withAppendedPath(ContactsContract.
                 PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
-        String[] projection = { ContactsContract.PhoneLookup._ID };
+        String[] projection = {ContactsContract.PhoneLookup._ID};
         Cursor cursor = null;
         try {
-            cursor = contactHelper.query(contactUri, projection, null, null,null);
+            cursor = contactHelper.query(contactUri, projection, null, null, null);
             if (cursor.moveToFirst()) {
                 int personID = cursor.getColumnIndex(ContactsContract.PhoneLookup._ID);
                 return cursor.getLong(personID);
@@ -145,45 +146,45 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
             }
         });
 
-            if (!("").equals(model.getContactName()) && model.getContactName() != null) {
-                holder.contactName.setText(model.getContactName());
-            } else {
-                holder.contactName.setText(R.string.no_name);
-            }
+        if (!("").equals(model.getContactName()) && model.getContactName() != null) {
+            holder.contactName.setText(model.getContactName());
+        } else {
+            holder.contactName.setText(R.string.no_name);
+        }
 
-            if (!("").equals(model.getContactNumber()) && model.getContactNumber() != null) {
-                holder.contactNumber.setText(model.getContactNumber());
-            } else {
-                holder.contactNumber.setText(context.getString(R.string.NO_CONTACT_NO));
-            }
+        if (!("").equals(model.getContactNumber()) && model.getContactNumber() != null) {
+            holder.contactNumber.setText(model.getContactNumber());
+        } else {
+            holder.contactNumber.setText(context.getString(R.string.NO_CONTACT_NO));
+        }
 
-            if (!("").equals(model.getContactEmail()) && model.getContactEmail() != null) {
-                holder.contactEmail.setText(model.getContactEmail());
-            } else {
-                holder.contactEmail.setText(context.getString(R.string.NO_CONTACT_EMAIL));
-            }
-            //to check if there is an image already in contacts or not
-            byte[] repeatImage = new byte[100];
-            if(Arrays.equals(model.getContactImage(), repeatImage)) {
-                Glide.with(context).load(R.drawable.ic_person_black_24dp).apply(new RequestOptions().
-                        override(120, 120)).into(holder.contactImage);
-            } else {
-                Bitmap bitmap = BitmapFactory.decodeByteArray(model.getContactImage(),
-                        0, model.getContactImage().length);
-                holder.contactImage.setImageBitmap(Bitmap.createScaledBitmap(bitmap,
-                        120,120, true));
-            }
+        if (!("").equals(model.getContactEmail()) && model.getContactEmail() != null) {
+            holder.contactEmail.setText(model.getContactEmail());
+        } else {
+            holder.contactEmail.setText(context.getString(R.string.NO_CONTACT_EMAIL));
+        }
+        //to check if there is an image already in contacts or not
+        byte[] repeatImage = new byte[100];
+        if (Arrays.equals(model.getContactImage(), repeatImage)) {
+            Glide.with(context).load(R.drawable.ic_person_black_24dp).apply(new RequestOptions().
+                    override(120, 120)).into(holder.contactImage);
+        } else {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(model.getContactImage(),
+                    0, model.getContactImage().length);
+            holder.contactImage.setImageBitmap(Bitmap.createScaledBitmap(bitmap,
+                    120, 120, true));
+        }
     }
 
     @SuppressLint("MissingPermission")
     private void onCall(String contactNumber) {
         Intent callIntent = new Intent(Intent.ACTION_DIAL);
-        callIntent.setData(Uri.parse("tel:"+contactNumber));
+        callIntent.setData(Uri.parse("tel:" + contactNumber));
         callIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(callIntent);
     }
 
-    public interface ContactActionListener{
+    public interface ContactActionListener {
         void onDelete(int itemPosition);
     }
 }

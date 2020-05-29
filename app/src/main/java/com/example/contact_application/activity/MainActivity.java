@@ -1,6 +1,5 @@
 package com.example.contact_application.activity;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 

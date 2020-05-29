@@ -17,10 +17,16 @@ public class ContactModel {
         return contactName;
     }
 
-    public String getContactNumber() { return contactNumber; }
+    public String getContactNumber() {
+        return contactNumber;
+    }
 
-    public String getContactEmail() { return contactEmail;}
+    public String getContactEmail() {
+        return contactEmail;
+    }
 
-    public byte[] getContactImage() { return contactImage; }
+    public byte[] getContactImage() {
+        return contactImage;
+    }
 
 }

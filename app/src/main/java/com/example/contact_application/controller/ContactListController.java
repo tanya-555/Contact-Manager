@@ -3,15 +3,11 @@ package com.example.contact_application.controller;
 import android.Manifest;
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
-import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.os.RemoteException;
 import android.provider.ContactsContract;
 import android.util.Log;
@@ -33,13 +29,8 @@ import com.example.contact_application.R;
 import com.example.contact_application.adapter.ContactAdapter;
 import com.example.contact_application.model.ContactModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
-import static android.app.Activity.RESULT_OK;
 import static com.example.contact_application.adapter.ContactAdapter.getContactID;
 
 public class ContactListController extends Controller {
@@ -52,8 +43,6 @@ public class ContactListController extends Controller {
     private FloatingActionButton add_contact;
     View view;
     Toast toast = null;
-    String contact_id;
-    Long raw_contact_id;
 
     private static final int REQUEST_CODE = 1000;
 
@@ -81,7 +70,6 @@ public class ContactListController extends Controller {
     }
 
 
-
     private void launchController() {
         getRouter().pushController(RouterTransaction.with(new AddContactController()));
 
@@ -92,7 +80,7 @@ public class ContactListController extends Controller {
 
         @Override
         public void onDelete(int itemPosition) {
-            boolean result = deleteContact(getApplicationContext().getContentResolver(),  arrayList.get(itemPosition).getContactNumber(), adapter, itemPosition);
+            boolean result = deleteContact(getApplicationContext().getContentResolver(), arrayList.get(itemPosition).getContactNumber(), adapter, itemPosition);
             if (result == true) {
                 toast = Toast.makeText(getApplicationContext(), "Contact deleted successfully", Toast.LENGTH_LONG);
                 toast.show();
@@ -108,12 +96,12 @@ public class ContactListController extends Controller {
 
     public boolean deleteContact(ContentResolver contactHelper, String number, ContactAdapter adapter, int item_position) {
         ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
-        String[] args = new String[] { String.valueOf(getContactID(contactHelper, number))};
+        String[] args = new String[]{String.valueOf(getContactID(contactHelper, number))};
         ops.add(ContentProviderOperation.newDelete(ContactsContract.RawContacts.CONTENT_URI).withSelection(ContactsContract.RawContacts.CONTACT_ID + "=?", args).build());
         try {
             contactHelper.applyBatch(ContactsContract.AUTHORITY, ops);
             arrayList.remove(item_position);
-             adapter.notifyItemRemoved(item_position);
+            adapter.notifyItemRemoved(item_position);
 
             return true;
         } catch (RemoteException e) {
@@ -204,7 +192,7 @@ public class ContactListController extends Controller {
 
                             if (dataCursor.getString(dataCursor.getColumnIndex("mimetype")).
                                     equals(ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE)) {
-                                contactImage =  dataCursor.getBlob(dataCursor.getColumnIndex("data15"));
+                                contactImage = dataCursor.getBlob(dataCursor.getColumnIndex("data15"));
 
                             }
                         } while (dataCursor.moveToNext());

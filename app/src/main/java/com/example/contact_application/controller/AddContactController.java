@@ -63,7 +63,7 @@ public class AddContactController extends Controller {
             public void onClick(View v) {
                 Intent pickPhoto = new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(pickPhoto , 1);
+                startActivityForResult(pickPhoto, 1);
             }
         });
     }
@@ -87,7 +87,7 @@ public class AddContactController extends Controller {
     }
 
     private void addNewContact() {
-        ArrayList <ContentProviderOperation> ops = new ArrayList< ContentProviderOperation >();
+        ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
 
         ops.add(ContentProviderOperation.newInsert(
                 ContactsContract.RawContacts.CONTENT_URI)
@@ -109,7 +109,7 @@ public class AddContactController extends Controller {
         }
 
         if (contactNumber.getText().toString() != null && !("").equals(contactNumber.getText().toString())) {
-            if(checkNumberValidity(contactNumber.getText().toString())) {
+            if (checkNumberValidity(contactNumber.getText().toString())) {
                 ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
                         .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
                         .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
@@ -134,7 +134,7 @@ public class AddContactController extends Controller {
                             ContactsContract.CommonDataKinds.Email.TYPE_WORK).build());
         }
 
-        if(isImageSelected) {
+        if (isImageSelected) {
             ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
                     .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
                     .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE)
@@ -143,7 +143,7 @@ public class AddContactController extends Controller {
 
         try {
             getApplicationContext().getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
-            Toast.makeText(getApplicationContext(),"Contact added successfully", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Contact added successfully", Toast.LENGTH_LONG).show();
             getRouter().popController(this);
 
         } catch (Exception e) {
@@ -153,7 +153,7 @@ public class AddContactController extends Controller {
     }
 
     private boolean checkNumberValidity(String contactNumber) {
-        if(contactNumber.length() > 10) {
+        if (contactNumber.length() > 10) {
             Toast.makeText(getActivity(), "Invalid Mobile Number!", Toast.LENGTH_LONG).show();
             return false;
         }
