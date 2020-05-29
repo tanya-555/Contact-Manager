@@ -20,19 +20,17 @@
             android:textStyle="bold" />
     </androidx.appcompat.widget.Toolbar>
 
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="30dp"
-        android:fitsSystemWindows="true"
-        android:layout_alignParentBottom="true"
-        android:padding="40dp">
+        android:layout_below="@+id/toolbar">
 
-        <ScrollView
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:fitsSystemWindows="true"
+            android:padding="40dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -101,7 +99,8 @@
 
             </RelativeLayout>
 
-        </ScrollView>
+        </RelativeLayout>
 
-    </RelativeLayout>
+    </ScrollView>
+
 </RelativeLayout>
