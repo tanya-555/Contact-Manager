@@ -19,6 +19,7 @@
         <string name="add">ADD</string>
         <string name="edit_contact">EDIT CONTACT</string>
         <string name="update">UPDATE</string>
+        <string name="loading">Loading...</string>
     </resources>
 
 

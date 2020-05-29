@@ -30,9 +30,9 @@
         android:layout_below="@+id/tv_cm"
         android:layout_centerInParent="true"
         android:layout_marginTop="@dimen/size_20dp"
-        android:text="Loading..."
+        android:text="@string/loading"
         android:textColor="@color/color_fg"
-        android:textSize="15dp"
+        android:textSize="@dimen/size_15dp"
         android:textStyle="italic" />
 
 </RelativeLayout>

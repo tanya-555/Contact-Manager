@@ -13,7 +13,7 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            android:layout_width="409dp"
+            android:layout_width="@dimen/size_409dp"
             android:layout_height="wrap_content"
             android:background="@color/color_fg"
             android:minHeight="?attr/actionBarSize"
@@ -36,22 +36,21 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginEnd="14dp"
-            android:layout_marginBottom="17dp"
+            android:layout_marginEnd="@dimen/size_14dp"
+            android:layout_marginBottom="@dimen/size_17dp"
             android:src="@drawable/add_contact"
             app:backgroundTint="@color/color_fg"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-             />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/contact_recyclerview"
-            android:layout_below="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/cloud_bg"/>
+            android:layout_below="@+id/toolbar"
+            android:background="@drawable/cloud_bg" />
 
         <ProgressBar
             android:id="@+id/progressbar"
@@ -59,7 +58,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true" />
-
 
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
